@@ -91,7 +91,7 @@ section {
 
 /* ---------- 封面 ---------- */
 #cover {
-  background: #050505; overflow: hidden;
+  background: #000; overflow: hidden;
   flex-direction: column; justify-content: center; text-align: center;
   cursor: none;
 }
@@ -119,19 +119,42 @@ section {
   max-width: 480px; margin-left: auto; margin-right: auto;
 }
 
-/* 鼠标光源光斑 */
+/* 烛火光斑（照亮标题） */
 #cover .cover-light {
-  position: fixed; width: 700px; height: 700px; border-radius: 50%;
+  position: fixed; width: 480px; height: 480px; border-radius: 50%;
   pointer-events: none; z-index: 1;
-  background: radial-gradient(circle, rgba(245,215,142,0.14) 0%, rgba(245,215,142,0.05) 30%, transparent 65%);
+  background: radial-gradient(circle, rgba(255,180,80,0.18) 0%, rgba(255,140,50,0.08) 35%, transparent 70%);
   transform: translate(-50%, -50%);
   transition: opacity .4s;
 }
+/* 烛火光标 */
 #cover .cover-cursor {
-  position: fixed; width: 10px; height: 10px; border-radius: 50%;
-  background: var(--light-warm); pointer-events: none; z-index: 3;
-  transform: translate(-50%, -50%);
-  box-shadow: 0 0 20px 6px rgba(245, 215, 142, 0.6);
+  position: fixed; width: 22px; height: 34px;
+  pointer-events: none; z-index: 3;
+  transform: translate(-50%, -80%);
+  transition: opacity .4s;
+}
+#cover .cover-cursor::before {
+  content: ''; position: absolute; bottom: 0; left: 50%;
+  width: 18px; height: 28px; transform: translateX(-50%);
+  background: radial-gradient(ellipse at 50% 80%, #fff8e0 0%, #ffd060 25%, #ff8c20 55%, #e05010 85%, transparent 100%);
+  border-radius: 50% 50% 50% 50% / 70% 70% 30% 30%;
+  box-shadow: 0 0 18px 6px rgba(255,150,50,0.55), 0 0 40px 12px rgba(255,120,30,0.25);
+  animation: flicker 0.18s ease-in-out infinite alternate;
+}
+#cover .cover-cursor::after {
+  content: ''; position: absolute; bottom: 4px; left: 50%;
+  width: 8px; height: 14px; transform: translateX(-50%);
+  background: radial-gradient(ellipse at 50% 75%, #ffffff 0%, #fff0c0 40%, #ffd060 80%, transparent 100%);
+  border-radius: 50% 50% 50% 50% / 70% 70% 30% 30%;
+  animation: flicker 0.15s ease-in-out infinite alternate-reverse;
+}
+@keyframes flicker {
+  0%   { transform: translateX(-50%) scaleY(1)    scaleX(1)    rotate(-1deg); opacity: 0.95; }
+  25%  { transform: translateX(-50%) scaleY(1.06) scaleX(0.96) rotate(1.5deg); opacity: 1; }
+  50%  { transform: translateX(-50%) scaleY(0.96) scaleX(1.04) rotate(-0.5deg); opacity: 0.9; }
+  75%  { transform: translateX(-50%) scaleY(1.03) scaleX(0.98) rotate(1deg); opacity: 1; }
+  100% { transform: translateX(-50%) scaleY(0.98) scaleX(1.02) rotate(-1.5deg); opacity: 0.95; }
 }
 .cover-scroll {
   position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);

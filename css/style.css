@@ -104,10 +104,18 @@ section {
   font-family: var(--serif); font-weight: 900;
   font-size: clamp(56px, 11vw, 140px);
   letter-spacing: 12px; line-height: 1;
-  background: linear-gradient(180deg, #fbe9c0, #b8893a);
+  color: #16100a;
+  position: relative;
+}
+#cover h1::before {
+  content: attr(data-text);
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, #fbe9c0, #d4a857);
   -webkit-background-clip: text; background-clip: text;
   -webkit-text-fill-color: transparent;
-  text-shadow: 0 0 80px rgba(212, 168, 87, 0.25);
+  mask-image: radial-gradient(circle 140px at var(--mx, 50%) var(--my, 50%), black 0%, rgba(0,0,0,0.75) 50%, transparent 100%);
+  -webkit-mask-image: radial-gradient(circle 140px at var(--mx, 50%) var(--my, 50%), black 0%, rgba(0,0,0,0.75) 50%, transparent 100%);
+  pointer-events: none;
 }
 #cover .cover-en {
   font-family: var(--display); font-style: italic;

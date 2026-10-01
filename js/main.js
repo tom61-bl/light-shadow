@@ -7,6 +7,7 @@
   const cover = document.getElementById('cover');
   const light = document.getElementById('coverLight');
   const cursor = document.getElementById('coverCursor');
+  const h1 = cover.querySelector('h1');
 
   function move(e) {
     const x = e.clientX;
@@ -17,6 +18,10 @@
     cursor.style.top = y + 'px';
     light.style.opacity = '1';
     cursor.style.opacity = '1';
+    // 标题遮罩跟随烛火
+    const rect = h1.getBoundingClientRect();
+    h1.style.setProperty('--mx', ((x - rect.left) / rect.width * 100) + '%');
+    h1.style.setProperty('--my', ((y - rect.top) / rect.height * 100) + '%');
   }
 
   // 初始放在屏幕中央

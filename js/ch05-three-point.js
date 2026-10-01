@@ -48,24 +48,46 @@
   resize();
   window.addEventListener('resize', resize);
 
-  // ===== 石膏像（头 + 肩 + 底座） =====
-  const plaster = new THREE.MeshStandardMaterial({ color: 0xd8cfc0, roughness: 0.85, metalness: 0 });
+  // ===== 石膏像（头 + 鼻 + 颈 + 肩 + 底座） =====
+  const plaster = new THREE.MeshStandardMaterial({ color: 0xe2d9cb, roughness: 0.75, metalness: 0 });
   const head = new THREE.Mesh(new THREE.SphereGeometry(1, 48, 48), plaster);
-  head.scale.set(0.85, 1.05, 0.85);
-  head.position.y = 2.4;
+  head.scale.set(0.82, 1.02, 0.82);
+  head.position.y = 2.5;
   head.castShadow = true;
   scene.add(head);
 
-  const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.4, 0.6, 24), plaster);
-  neck.position.y = 1.5;
+  // 鼻子
+  const nose = new THREE.Mesh(new THREE.SphereGeometry(0.18, 16, 16), plaster);
+  nose.scale.set(0.7, 1.2, 1.4);
+  nose.position.set(0, 2.45, 0.78);
+  nose.castShadow = true;
+  scene.add(nose);
+
+  // 脖子
+  const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.38, 0.55, 24), plaster);
+  neck.position.y = 1.55;
   neck.castShadow = true;
   scene.add(neck);
 
-  const shoulders = new THREE.Mesh(new THREE.SphereGeometry(1.2, 48, 24), plaster);
-  shoulders.scale.set(1.1, 0.5, 0.7);
-  shoulders.position.y = 1.0;
+  // 肩膀（更优雅的胸像）
+  const shoulders = new THREE.Mesh(new THREE.SphereGeometry(1.25, 48, 24), plaster);
+  shoulders.scale.set(1.15, 0.48, 0.72);
+  shoulders.position.y = 1.05;
   shoulders.castShadow = true;
   scene.add(shoulders);
+
+  // 底座（圆柱台座）
+  const baseMat = new THREE.MeshStandardMaterial({ color: 0x2a2620, roughness: 0.9, metalness: 0 });
+  const base = new THREE.Mesh(new THREE.CylinderGeometry(1.3, 1.45, 0.5, 32), baseMat);
+  base.position.y = 0.25;
+  base.castShadow = true;
+  base.receiveShadow = true;
+  scene.add(base);
+  const baseTop = new THREE.Mesh(new THREE.CylinderGeometry(1.15, 1.3, 0.12, 32), plaster);
+  baseTop.position.y = 0.56;
+  baseTop.castShadow = true;
+  baseTop.receiveShadow = true;
+  scene.add(baseTop);
 
   // 地面
   const floor = new THREE.Mesh(

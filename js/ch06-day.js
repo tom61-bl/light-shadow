@@ -87,29 +87,101 @@
       ctx.beginPath(); ctx.arc(sp.x, sp.y, 26, 0, Math.PI * 2); ctx.fill();
     }
 
-    // 远山
-    ctx.fillStyle = 'rgba(60,70,80,0.7)';
+    // 云
+    const cloudAlpha = t >= 6 && t <= 19 ? 0.35 : 0.1;
+    ctx.fillStyle = 'rgba(255,255,255,' + cloudAlpha + ')';
+    function cloud(cx, cy, s) {
+      ctx.beginPath();
+      ctx.arc(cx, cy, 18 * s, 0, Math.PI * 2);
+      ctx.arc(cx + 20 * s, cy + 4 * s, 22 * s, 0, Math.PI * 2);
+      ctx.arc(cx + 42 * s, cy, 16 * s, 0, Math.PI * 2);
+      ctx.arc(cx + 22 * s, cy - 10 * s, 18 * s, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    cloud(150, 70, 1.1);
+    cloud(520, 50, 0.9);
+    cloud(620, 110, 0.7);
+
+    // 远山（三层，有深度）
+    // 最远
+    ctx.fillStyle = 'rgba(80,90,110,0.5)';
+    ctx.beginPath();
+    ctx.moveTo(0, H * 0.58);
+    for (let x = 0; x <= W; x += 40) {
+      ctx.lineTo(x, H * 0.58 - 50 - Math.sin(x * 0.015 + 1) * 35);
+    }
+    ctx.lineTo(W, H); ctx.lineTo(0, H);
+    ctx.fill();
+    // 中间
+    ctx.fillStyle = 'rgba(55,65,80,0.7)';
     ctx.beginPath();
     ctx.moveTo(0, H * 0.62);
-    for (let x = 0; x <= W; x += 60) {
-      ctx.lineTo(x, H * 0.62 - 40 - Math.sin(x * 0.02) * 30);
+    for (let x = 0; x <= W; x += 50) {
+      ctx.lineTo(x, H * 0.62 - 35 - Math.sin(x * 0.02 + 2) * 28);
+    }
+    ctx.lineTo(W, H); ctx.lineTo(0, H);
+    ctx.fill();
+    // 近山
+    ctx.fillStyle = 'rgba(40,48,58,0.85)';
+    ctx.beginPath();
+    ctx.moveTo(0, H * 0.66);
+    for (let x = 0; x <= W; x += 45) {
+      ctx.lineTo(x, H * 0.66 - 20 - Math.sin(x * 0.025 + 3) * 18);
     }
     ctx.lineTo(W, H); ctx.lineTo(0, H);
     ctx.fill();
 
     // 地面
-    const ground = ctx.createLinearGradient(0, H * 0.62, 0, H);
-    ground.addColorStop(0, 'rgb(50,55,45)');
-    ground.addColorStop(1, 'rgb(30,34,28)');
+    const ground = ctx.createLinearGradient(0, H * 0.66, 0, H);
+    ground.addColorStop(0, 'rgb(45,50,40)');
+    ground.addColorStop(1, 'rgb(25,28,22)');
     ctx.fillStyle = ground;
-    ctx.fillRect(0, H * 0.62, W, H * 0.38);
+    ctx.fillRect(0, H * 0.66, W, H * 0.34);
+    // 地面纹理（草）
+    ctx.strokeStyle = 'rgba(60,70,50,0.3)';
+    ctx.lineWidth = 1;
+    for (let i = 0; i < 40; i++) {
+      const gx = (i * 37) % W;
+      const gy = H * 0.68 + (i * 13) % (H * 0.3);
+      ctx.beginPath();
+      ctx.moveTo(gx, gy);
+      ctx.lineTo(gx + 2, gy - 6);
+      ctx.stroke();
+    }
 
-    // 树
-    const tx = 360, ty = H * 0.62;
-    ctx.fillStyle = 'rgb(45,35,25)';
-    ctx.fillRect(tx - 8, ty - 90, 16, 90);
-    ctx.fillStyle = 'rgb(35,55,35)';
-    ctx.beginPath(); ctx.arc(tx, ty - 110, 45, 0, Math.PI * 2); ctx.fill();
+    // 精致的树
+    const tx = 360, ty = H * 0.66;
+    // 树干
+    const trunkGrad = ctx.createLinearGradient(tx - 10, 0, tx + 10, 0);
+    trunkGrad.addColorStop(0, '#3a2a1a');
+    trunkGrad.addColorStop(0.5, '#5a4028');
+    trunkGrad.addColorStop(1, '#3a2a1a');
+    ctx.fillStyle = trunkGrad;
+    ctx.beginPath();
+    ctx.moveTo(tx - 9, ty);
+    ctx.quadraticCurveTo(tx - 7, ty - 50, tx - 5, ty - 85);
+    ctx.lineTo(tx + 5, ty - 85);
+    ctx.quadraticCurveTo(tx + 7, ty - 50, tx + 9, ty);
+    ctx.closePath();
+    ctx.fill();
+    // 树枝
+    ctx.strokeStyle = '#4a3520';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(tx, ty - 60);
+    ctx.lineTo(tx - 25, ty - 85);
+    ctx.moveTo(tx, ty - 55);
+    ctx.lineTo(tx + 22, ty - 80);
+    ctx.stroke();
+    // 树冠（三层，有层次）
+    ctx.fillStyle = 'rgb(30,50,30)';
+    ctx.beginPath(); ctx.arc(tx - 20, ty - 95, 28, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(tx + 22, ty - 92, 26, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = 'rgb(38,58,35)';
+    ctx.beginPath(); ctx.arc(tx, ty - 108, 34, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = 'rgb(48,68,42)';
+    ctx.beginPath(); ctx.arc(tx - 8, ty - 115, 22, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(tx + 12, ty - 112, 18, 0, Math.PI * 2); ctx.fill();
 
     // 树影（随太阳方向和高度）
     if (sp) {

@@ -51,30 +51,58 @@
 
     // 人物（中心）
     const px = W / 2, py = 320;
-    // 人物可见程度：曝光越高，人物越亮
-    const personF = Math.max(0, (expo + 2) / 4); // 0剪影 ~ 1完整
+    const personF = Math.max(0, (expo + 2) / 4);
 
-    // 轮廓光（边缘发光）——逆光时始终有，曝光中等时最明显
-    const rim = Math.sin(Math.min(1, personF + 0.3) * Math.PI); // 中间强
+    const rim = Math.sin(Math.min(1, personF + 0.3) * Math.PI);
     ctx.save();
     ctx.shadowColor = 'rgba(255,230,170,' + (0.5 + rim * 0.5) + ')';
     ctx.shadowBlur = 20 + rim * 25;
 
-    // 人形轮廓
     const bodyCol = personF < 0.15 ? '#15110c' : 'rgb(' +
       Math.round(lerp2(20, 200, personF)) + ',' +
       Math.round(lerp2(15, 160, personF)) + ',' +
       Math.round(lerp2(12, 130, personF)) + ')';
     ctx.fillStyle = bodyCol;
-    // 头
-    ctx.beginPath(); ctx.arc(px, py - 130, 26, 0, Math.PI * 2); ctx.fill();
-    // 头发边缘（逆光发光）
-    // 身体
+
+    // 腿
+    ctx.fillRect(px - 16, py - 10, 13, 12);
+    ctx.fillRect(px + 3, py - 10, 13, 12);
+
+    // 身体（连衣裙/上衣，有腰的曲线）
     ctx.beginPath();
-    ctx.moveTo(px - 45, py - 90);
-    ctx.lineTo(px + 45, py - 90);
-    ctx.lineTo(px + 55, py);
-    ctx.lineTo(px - 55, py);
+    ctx.moveTo(px - 38, py - 95);
+    ctx.quadraticCurveTo(px - 48, py - 60, px - 42, py - 25);
+    ctx.quadraticCurveTo(px - 35, py - 12, px - 20, py - 10);
+    ctx.lineTo(px + 20, py - 10);
+    ctx.quadraticCurveTo(px + 35, py - 12, px + 42, py - 25);
+    ctx.quadraticCurveTo(px + 48, py - 60, px + 38, py - 95);
+    ctx.quadraticCurveTo(px, py - 105, px - 38, py - 95);
+    ctx.closePath();
+    ctx.fill();
+
+    // 手臂（自然下垂）
+    ctx.beginPath();
+    ctx.ellipse(px - 48, py - 55, 8, 32, 0.1, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.ellipse(px + 48, py - 55, 8, 32, -0.1, 0, Math.PI * 2);
+    ctx.fill();
+
+    // 脖子
+    ctx.fillRect(px - 10, py - 110, 20, 18);
+
+    // 头（椭圆脸）
+    ctx.beginPath();
+    ctx.ellipse(px, py - 138, 24, 29, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // 头发（覆盖头顶和两侧，有发丝感）
+    ctx.beginPath();
+    ctx.moveTo(px - 24, py - 140);
+    ctx.bezierCurveTo(px - 28, py - 170, px - 10, py - 178, px, py - 175);
+    ctx.bezierCurveTo(px + 10, py - 178, px + 28, py - 170, px + 24, py - 140);
+    ctx.bezierCurveTo(px + 20, py - 155, px + 8, py - 160, px, py - 158);
+    ctx.bezierCurveTo(px - 8, py - 160, px - 20, py - 155, px - 24, py - 140);
     ctx.closePath();
     ctx.fill();
     ctx.restore();
@@ -84,12 +112,23 @@
       ctx.strokeStyle = 'rgba(255,235,190,' + (0.6 + rim * 0.4) + ')';
       ctx.lineWidth = 3;
       ctx.beginPath();
-      ctx.arc(px, py - 130, 26, Math.PI * 1.1, Math.PI * 1.9);
+      ctx.ellipse(px, py - 138, 24, 29, 0, Math.PI * 1.1, Math.PI * 1.9);
       ctx.stroke();
       ctx.beginPath();
-      ctx.moveTo(px - 45, py - 90); ctx.lineTo(px - 55, py);
-      ctx.moveTo(px + 45, py - 90); ctx.lineTo(px + 55, py);
+      ctx.moveTo(px - 38, py - 95);
+      ctx.quadraticCurveTo(px - 48, py - 60, px - 42, py - 25);
+      ctx.moveTo(px + 38, py - 95);
+      ctx.quadraticCurveTo(px + 48, py - 60, px + 42, py - 25);
       ctx.stroke();
+      // 头发轮廓光
+      ctx.strokeStyle = 'rgba(255,240,200,' + (0.5 + rim * 0.5) + ')';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(px - 24, py - 140);
+      ctx.bezierCurveTo(px - 28, py - 170, px - 10, py - 178, px, py - 175);
+      ctx.bezierCurveTo(px + 10, py - 178, px + 28, py - 170, px + 24, py - 140);
+      ctx.stroke();
+    }
     }
 
     // 状态

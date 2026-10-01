@@ -32,26 +32,89 @@
     ctx.fillStyle = bg;
     ctx.fillRect(0, 0, W, H);
 
-    // 一个静物（花瓶），明暗随影调
-    const cx = 250, cy = 190;
+    // 精致静物（花瓶 + 花）
+    const cx = 240, cy = 200;
     const objDark = Math.max(10, base - 120);
     const objLight = Math.min(255, base + 30);
-    // 花瓶
-    const vg = ctx.createLinearGradient(cx - 40, 0, cx + 40, 0);
+    const flowerDark = Math.max(15, base - 100);
+    const flowerLight = Math.min(255, base + 20);
+
+    // 桌面
+    ctx.fillStyle = 'rgb(' + Math.max(10, base - 40) + ',' + Math.max(10, base - 42) + ',' + Math.max(10, base - 48) + ')';
+    ctx.fillRect(0, cy + 85, W, H);
+    // 桌面边缘线
+    ctx.fillStyle = 'rgba(0,0,0,0.15)';
+    ctx.fillRect(0, cy + 85, W, 3);
+
+    // 花瓶（优雅曲线：细颈、圆肚、收底）
+    const vg = ctx.createLinearGradient(cx - 45, 0, cx + 45, 0);
     vg.addColorStop(0, 'rgb(' + objDark + ',' + (objDark - 5) + ',' + (objDark - 10) + ')');
-    vg.addColorStop(0.5, 'rgb(' + objLight + ',' + (objLight - 5) + ',' + (objLight - 15) + ')');
+    vg.addColorStop(0.4, 'rgb(' + objLight + ',' + (objLight - 5) + ',' + (objLight - 15) + ')');
+    vg.addColorStop(0.6, 'rgb(' + (objLight - 10) + ',' + (objLight - 15) + ',' + (objLight - 25) + ')');
     vg.addColorStop(1, 'rgb(' + objDark + ',' + (objDark - 5) + ',' + (objDark - 10) + ')');
     ctx.fillStyle = vg;
     ctx.beginPath();
-    ctx.moveTo(cx - 22, cy - 90);
-    ctx.quadraticCurveTo(cx - 50, cy - 40, cx - 38, cy + 60);
-    ctx.quadraticCurveTo(cx, cy + 90, cx + 38, cy + 60);
-    ctx.quadraticCurveTo(cx + 50, cy - 40, cx + 22, cy - 90);
+    ctx.moveTo(cx - 14, cy - 80); // 瓶口左
+    ctx.lineTo(cx - 14, cy - 60); // 瓶颈
+    ctx.bezierCurveTo(cx - 45, cy - 45, cx - 52, cy + 10, cx - 38, cy + 55); // 左肚
+    ctx.quadraticCurveTo(cx - 30, cy + 75, cx, cy + 78); // 底左
+    ctx.quadraticCurveTo(cx + 30, cy + 75, cx + 38, cy + 55); // 底右
+    ctx.bezierCurveTo(cx + 52, cy + 10, cx + 45, cy - 45, cx + 14, cy - 60); // 右肚
+    ctx.lineTo(cx + 14, cy - 80); // 瓶颈右
     ctx.closePath();
     ctx.fill();
-    // 桌面
-    ctx.fillStyle = 'rgb(' + Math.max(10, base - 40) + ',' + Math.max(10, base - 42) + ',' + Math.max(10, base - 48) + ')';
-    ctx.fillRect(0, cy + 80, W, H);
+    // 瓶口
+    ctx.fillStyle = 'rgb(' + Math.max(5, objDark - 20) + ',' + Math.max(5, objDark - 25) + ',' + Math.max(5, objDark - 30) + ')';
+    ctx.fillRect(cx - 14, cy - 82, 28, 5);
+    // 花瓶高光
+    ctx.fillStyle = 'rgba(255,255,255,0.18)';
+    ctx.beginPath();
+    ctx.ellipse(cx - 22, cy - 10, 7, 35, -0.15, 0, Math.PI * 2);
+    ctx.fill();
+
+    // 花茎
+    ctx.strokeStyle = 'rgb(' + Math.max(20, base - 80) + ',' + Math.max(30, base - 60) + ',' + Math.max(15, base - 100) + ')';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(cx - 5, cy - 78);
+    ctx.quadraticCurveTo(cx - 25, cy - 110, cx - 40, cy - 140);
+    ctx.moveTo(cx + 3, cy - 78);
+    ctx.quadraticCurveTo(cx + 15, cy - 115, cx + 10, cy - 150);
+    ctx.moveTo(cx, cy - 78);
+    ctx.quadraticCurveTo(cx + 5, cy - 105, cx - 5, cy - 135);
+    ctx.stroke();
+
+    // 叶子
+    ctx.fillStyle = 'rgb(' + Math.max(25, base - 70) + ',' + Math.max(40, base - 50) + ',' + Math.max(20, base - 90) + ')';
+    ctx.beginPath();
+    ctx.ellipse(cx - 28, cy - 105, 10, 5, -0.6, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.ellipse(cx + 12, cy - 115, 9, 4, 0.5, 0, Math.PI * 2);
+    ctx.fill();
+
+    // 花（三朵：玫瑰形）
+    function flower(fx, fy, size, col) {
+      ctx.fillStyle = col;
+      // 外层花瓣
+      for (let i = 0; i < 6; i++) {
+        const a = i * Math.PI / 3;
+        ctx.beginPath();
+        ctx.ellipse(fx + Math.cos(a) * size * 0.5, fy + Math.sin(a) * size * 0.5, size * 0.45, size * 0.3, a, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      // 中心
+      ctx.fillStyle = 'rgb(' + Math.max(10, flowerDark - 10) + ',' + Math.max(8, flowerDark - 15) + ',' + Math.max(5, flowerDark - 20) + ')';
+      ctx.beginPath();
+      ctx.arc(fx, fy, size * 0.3, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    const roseCol = 'rgb(' + Math.round(lerp2(flowerDark, flowerLight + 40, 0.6)) + ',' +
+      Math.round(lerp2(flowerDark, flowerLight - 20, 0.4)) + ',' +
+      Math.round(lerp2(flowerDark, flowerLight - 10, 0.5)) + ')';
+    flower(cx - 40, cy - 145, 16, roseCol);
+    flower(cx + 10, cy - 155, 14, roseCol);
+    flower(cx - 5, cy - 138, 12, roseCol);
 
     // ===== 直方图（右侧区域）=====
     const histX = 460, histY = 60, histW = 220, histH = 200;
